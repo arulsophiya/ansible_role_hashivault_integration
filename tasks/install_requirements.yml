@@ -1,0 +1,20 @@
+- name: Find collections path
+  ansible.builtin.debug:
+    msg: "{{ lookup('config', 'COLLECTIONS_PATHS') }}"
+  run_once: true
+  register: collections_path
+  delegate_to: localhost
+
+- name: Find roles path
+  ansible.builtin.debug:
+    msg: "{{ lookup('config', 'DEFAULT_ROLES_PATH') }}"
+  run_once: true
+  register: roles_path
+  delegate_to: localhost
+
+- name: Install hashivault collection
+  ansible.builtin.shell:
+    cmd: 'ansible-galaxy collection install -p {{ collections_path.msg[0] }}
+    -r {{ roles_path.msg[0] }}/{{ ansible_role_name }}/collections/requirements.yml'
+  run_once: true
+  delegate_to: localhost

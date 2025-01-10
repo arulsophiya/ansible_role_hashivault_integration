@@ -1,0 +1,31 @@
+- name: Install requirements
+  ansible.builtin.include_tasks: install_requirements.yml
+
+- name: Read the latest version of a kv2 secret from Vault
+  community.hashi_vault.vault_kv2_get:
+    url: '{{ vault_addr }}'
+    engine_mount_point: "{{ mount_path }}"
+    path: "{{ secret_path }}"
+  register: response
+  delegate_to: localhost
+
+- name: Display the results
+  ansible.builtin.debug:
+    msg:
+      - "Secret: {{ response.secret }}"
+      - "Data: {{ response.data }} (contains secret data & metadata in kv2)"
+      - "Metadata: {{ response.metadata }}"
+      - "Full response: {{ response.raw }}"
+      - "Value of key 'password' in the secret: {{ response.secret.password }}"
+
+- name: Write/create a secret
+  community.hashi_vault.vault_kv2_write:
+    url: '{{ vault_addr }}'
+    engine_mount_point: "{{ mount_path }}"
+    path: "{{ secret_path }}"
+    data: "{{ vault_data | items2dict }}"
+  delegate_to: localhost
+  vars:
+    vault_data:
+      - key: "foo"
+        value: "bar"

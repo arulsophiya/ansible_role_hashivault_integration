@@ -1,0 +1,3 @@
+vault_addr: "<URL to the Vault service>"
+mount_path: "test"
+vault_path: "dummydata/sample"
