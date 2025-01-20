@@ -1,4 +1,4 @@
-vault_addr: "<URL to the Vault service>"
+vault_addr: "<URL to the Vault address>"
 mount_path: "test"
 vault_path: "dummydata/sample"
 module_req:
